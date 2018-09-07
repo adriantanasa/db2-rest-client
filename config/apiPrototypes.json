@@ -1,0 +1,83 @@
+{
+    "AUTH": {
+        "uri": "/auth/tokens",
+        "json": true,
+        "method": "POST",
+        "body": {
+            "userid": null,
+            "password": null
+        }
+    },
+    "SQL_JOBS": {
+        "uri": "/sql_jobs",
+        "json": true,
+        "method": "POST",
+        "body": {
+            "commands": null,
+            "limit": 1000,
+            "separator": ";",
+            "stop_on_error": "yes"
+        },
+        "auth": {
+            "bearer": null
+        }
+    },
+    "SQL_QUERY_EXPORT": {
+        "uri": "/sql_query_export",
+        "json": true,
+        "method": "POST",
+        "body": {
+            "command": null
+        },
+        "auth": {
+            "bearer": null
+        }
+    },
+    "UPLOAD": {
+        "uri": "/home_content/load",
+        "json": true,
+        "method": "POST",
+        "auth": {
+            "bearer": null
+        }
+    },
+    "LOAD": {
+        "uri": "/load_jobs",
+        "json": true,
+        "method": "POST",
+        "auth": {
+            "bearer": null
+        },
+        "body": {
+            "load_source": "SERVER",
+            "load_action": "INSERT",
+            "schema": "<PLACEHOLDER>",
+            "table": "<PLACEHOLDER>",
+            "max_row_count": 0,
+            "max_warning_count": 1000,
+            "auto_create_table": {
+                "execute": "no"
+            },
+            "server_source": {
+                "file_path": "<PLACEHOLDER>"
+            },
+            "file_options": {
+                "code_page": "1208",
+                "has_header_row": "no",
+                "delimiter_priority": "RECORD",
+                "implicitly_hidden_columns": "MISSING",
+                "identity_columns": "IGNORE",
+                "string_blanks": "REMOVE",
+                "cde_analyze_frequency": 0,
+                "use_defaults_for_missing_values": "no"
+            }
+            }
+    },
+    "DEFAULT": {
+        "method": "GET",
+        "auth": {
+            "bearer": null
+        },
+        "json": true
+    }
+}
