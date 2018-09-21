@@ -25,10 +25,10 @@ npm i db2-on-cloud-rest --save
 ## Usage
 
 ```javascript
-const DB2RestClient = require('db2-on-cloud-rest');
+const Db2RestClient = require('db2-on-cloud-rest');
 
 try {
-    const db2Client = new DB2RestClient({
+    const db2Client = new Db2RestClient({
         credentials: {
             userid: 'userId',
             password: 'password'
@@ -55,7 +55,52 @@ Check the /test/integration folder for examples of usage.
 
 ## Jobs
 
-TBD
+There are a set of CLI jobs that can be executed in an automation script and can be integrated with a CI runner (Jenkins/Travis).
+The job is looking in the ENV variables for the DB2 credentials.
+
+```
+npm i -g db2-on-cloud-rest
+```
+
+### load
+
+Loads a local CSV file into a target table.
+
+```shell
+export DB_USERID='<USERNAME>';export DB_PASSWORD='<PASSWORD>';export DB_URI='https://<hostname>/dbapi/v3';export DEBUG=db2-on-cloud-rest:cli;
+db2-on-cloud-rest load --file=./test/data/sample1.csv --table='TST_SAMPLE' --schema='MANUAL' --type=INSERT
+```
+
+### load-in-place
+
+Loads all the data in a new table created from the target and then replaces the target with the new table (renaming).
+
+```shell
+# default CSV file
+db2-on-cloud-rest load-in-place --file=./test/data/sample2.csv --table='TST_SAMPLE' --schema='MANUAL'
+
+# customize request - TSV file with header
+db2-on-cloud-rest load-in-place --file=./test/data/sample3.tsv --table='TST_SAMPLE' --schema='MANUAL' --extra='{"body": { "file_options": {"has_header_row":"yes","column_delimiter":"0x09"}}}'
+
+```
+
+### query (only SELECT queries)
+
+Executes an SQL query in sync mode and returns up to 10.000 rows of data in JSON format. Only SELECT queries are allowed by
+DB2 api.
+
+```shell
+# example of output to a file
+db2-on-cloud-rest query --query="SELECT * FROM MANUAL.TST_SAMPLE" > test.json
+```
+
+### batch
+
+Executes a list of coma separated list of QUERIES.
+
+```shell
+db2-on-cloud-rest batch --query="INSERT INTO MANUAL.TST_SAMPLE (ID, DESCRIPTION) VALUES ('100', 'test'); SELECT * FROM MANUAL.TST_SAMPLE;" > test.json
+```
 
 ## Integration Testing
 
@@ -75,6 +120,10 @@ export DEBUG=db2-on-cloud-rest:info
 # all
 export DEBUG=db2-on-cloud-rest:*
 ```
+
+## Contribution
+
+We are welcoming contributors - feel free to report issues, request features and help us improve the tool.
 
 ## References
 
