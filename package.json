@@ -8,10 +8,10 @@
     "coverage": "nyc npm test",
     "integration": "mocha test/integration --recursive --timeout 50000",
     "lint": "eslint index.js lib",
-    "db2-rest-client": "node ./bin/db2-on-cloud-rest.js"
+    "db2-rest-client": "node ./bin/db2-rest-client.js"
   },
   "bin": {
-    "db2-rest-client": "./bin/db2-on-cloud-rest.js"
+    "db2-rest-client": "./bin/db2-rest-client.js"
   },
   "pre-commit": [
     "lint",
@@ -19,14 +19,14 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/adriantanasa/db2-on-cloud-rest.git"
+    "url": "git+https://github.com/adriantanasa/db2-rest-client.git"
   },
   "author": "Adrian Tanasa <adrian_tanasa@yahoo.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/adriantanasa/db2-on-cloud-rest/issues"
+    "url": "https://github.com/adriantanasa/db2-rest-client/issues"
   },
-  "homepage": "https://github.com/adriantanasa/db2-on-cloud-rest#readme",
+  "homepage": "https://github.com/adriantanasa/db2-rest-client#readme",
   "devDependencies": {
     "chai": "^4.1.2",
     "csvtojson": "^2.0.8",

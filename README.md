@@ -1,4 +1,4 @@
-# db2-on-cloud-rest
+# db2-rest-client
 
 Node.js client for IBM Db2 Warehouse on Cloud REST API (previously dashDB).
 It is intended to be used for DevOps (administration, monitoring, data load) for DB2 on Cloud service.
@@ -19,13 +19,13 @@ The target APIs are covering the following main areas:
 Installing the client locally and using it in a Node.JS application:
 
 ```
-npm i db2-on-cloud-rest --save
+npm i db2-rest-client --save
 ```
 
 ## Usage
 
 ```javascript
-const Db2RestClient = require('db2-on-cloud-rest');
+const Db2RestClient = require('db2-rest-client');
 
 try {
     const db2Client = new Db2RestClient({
@@ -58,8 +58,8 @@ Check the /test/integration folder for examples of usage.
 There are a set of CLI jobs that can be executed in an automation script and can be integrated with a CI runner (Jenkins/Travis).
 The job is looking in the ENV variables for the DB2 credentials.
 
-```
-npm i -g db2-on-cloud-rest
+```shell
+npm i -g db2-rest-client
 ```
 
 ### load
@@ -67,8 +67,8 @@ npm i -g db2-on-cloud-rest
 Loads a local CSV file into a target table.
 
 ```shell
-export DB_USERID='<USERNAME>';export DB_PASSWORD='<PASSWORD>';export DB_URI='https://<hostname>/dbapi/v3';export DEBUG=db2-on-cloud-rest:cli;
-db2-on-cloud-rest load --file=./test/data/sample1.csv --table='TST_SAMPLE' --schema='MANUAL' --type=INSERT
+export DB_USERID='<USERNAME>';export DB_PASSWORD='<PASSWORD>';export DB_URI='https://<hostname>/dbapi/v3';export DEBUG=db2-rest-client:cli;
+db2-rest-client load --file=./test/data/sample1.csv --table='TST_SAMPLE' --schema='MANUAL' --type=INSERT
 ```
 
 ### load-in-place
@@ -77,10 +77,10 @@ Loads all the data in a new table created from the target and then replaces the 
 
 ```shell
 # default CSV file
-db2-on-cloud-rest load-in-place --file=./test/data/sample2.csv --table='TST_SAMPLE' --schema='MANUAL'
+db2-rest-client load-in-place --file=./test/data/sample2.csv --table='TST_SAMPLE' --schema='MANUAL'
 
 # customize request - TSV file with header
-db2-on-cloud-rest load-in-place --file=./test/data/sample3.tsv --table='TST_SAMPLE' --schema='MANUAL' --extra='{"body": { "file_options": {"has_header_row":"yes","column_delimiter":"0x09"}}}'
+db2-rest-client load-in-place --file=./test/data/sample3.tsv --table='TST_SAMPLE' --schema='MANUAL' --extra='{"body": { "file_options": {"has_header_row":"yes","column_delimiter":"0x09"}}}'
 
 ```
 
@@ -91,7 +91,7 @@ DB2 api.
 
 ```shell
 # example of output to a file
-db2-on-cloud-rest query --query="SELECT * FROM MANUAL.TST_SAMPLE" > test.json
+db2-rest-client query --query="SELECT * FROM MANUAL.TST_SAMPLE" > test.json
 ```
 
 ### batch
@@ -99,7 +99,7 @@ db2-on-cloud-rest query --query="SELECT * FROM MANUAL.TST_SAMPLE" > test.json
 Executes a list of coma separated list of QUERIES.
 
 ```shell
-db2-on-cloud-rest batch --query="INSERT INTO MANUAL.TST_SAMPLE (ID, DESCRIPTION) VALUES ('100', 'test'); SELECT * FROM MANUAL.TST_SAMPLE;" > test.json
+db2-rest-client batch --query="INSERT INTO MANUAL.TST_SAMPLE (ID, DESCRIPTION) VALUES ('100', 'test'); SELECT * FROM MANUAL.TST_SAMPLE;" > test.json
 ```
 
 ## Integration Testing
@@ -114,11 +114,11 @@ export DB_USERID='<userid>';export DB_PASSWORD='<password>';export DB_URI='https
 
 ```
 # all log levels
-export DEBUG=db2-on-cloud-rest
+export DEBUG=db2-rest-client
 # just info
-export DEBUG=db2-on-cloud-rest:info
+export DEBUG=db2-rest-client:info
 # all
-export DEBUG=db2-on-cloud-rest:*
+export DEBUG=db2-rest-client:*
 ```
 
 ## Contribution

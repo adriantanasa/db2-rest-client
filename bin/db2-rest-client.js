@@ -3,7 +3,7 @@
 'use strict';
 
 const util = require('util');
-const debug = require('debug')('db2-on-cloud-rest:cli');
+const debug = require('debug')('db2-rest-client:cli');
 const argv = require('minimist')(process.argv.slice(2));
 const Db2RestClient = require('../lib/Db2RestClient');
 const StrategyFactory = require('../lib/StrategyFactory');
@@ -11,7 +11,7 @@ const StrategyFactory = require('../lib/StrategyFactory');
 /**
  * Entry point for cli jobs
  * export DB_USERID='<userid>';export DB_PASSWORD='<password>'; export DB_URI='https://<hostname>/dbapi/v3'
- * db2-on-cloud-rest <job> <arguments>
+ * db2-rest-client <job> <arguments>
  */
 
 const {

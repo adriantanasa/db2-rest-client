@@ -1,4 +1,4 @@
-const debugNotice = require('debug')('db2-on-cloud-rest:notice');
+const debugNotice = require('debug')('db2-rest-client:notice');
 const Db2RestClient = require('../../lib/Db2RestClient');
 const expect = require('chai').expect;
 let client;
