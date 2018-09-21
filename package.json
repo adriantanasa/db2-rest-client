@@ -7,7 +7,11 @@
     "test": "mocha test/*Spec.js --recursive",
     "coverage": "nyc npm test",
     "integration": "mocha test/integration --recursive --timeout 50000",
-    "lint": "eslint index.js lib"
+    "lint": "eslint index.js lib",
+    "db2-on-cloud-rest": "node ./bin/db2-on-cloud-rest.js"
+  },
+  "bin": {
+    "db2-on-cloud-rest": "./bin/db2-on-cloud-rest.js"
   },
   "pre-commit": [
     "lint",

@@ -1,5 +1,5 @@
 const debugNotice = require('debug')('db2-on-cloud-rest:notice');
-const DB2RestClient = require('../../lib/Db2RestClient');
+const Db2RestClient = require('../../lib/Db2RestClient');
 const expect = require('chai').expect;
 let client;
 
@@ -19,7 +19,7 @@ describe('INTEGRATION tests', () => {
             },
             uri: uri
         };
-        client = new DB2RestClient(config);
+        client = new Db2RestClient(config);
         try {
             await client.bulkQueries('DROP TABLE INTEGR.TST_SAMPLE');
         } catch (err) {
