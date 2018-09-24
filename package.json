@@ -32,6 +32,7 @@
     "csvtojson": "^2.0.8",
     "eslint": "^5.4.0",
     "eslint-plugin-node": "^7.0.1",
+    "minimist": "^1.2.0",
     "mocha": "^5.2.0",
     "nyc": "^13.0.1",
     "pre-commit": "^1.2.2",
