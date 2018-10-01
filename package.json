@@ -4,7 +4,7 @@
   "description": "Node.js Client for DB2 on Cloud (REST api) - administration, monitoring, exploring, loading data.",
   "main": "index.js",
   "scripts": {
-    "test": "mocha test/*Spec.js --recursive",
+    "test": "mocha test/unit --recursive",
     "coverage": "nyc npm test",
     "integration": "mocha test/integration --recursive --timeout 50000",
     "lint": "eslint index.js lib",
@@ -32,6 +32,7 @@
     "eslint": "^5.4.0",
     "eslint-plugin-node": "^7.0.1",
     "mocha": "^5.2.0",
+    "nock": "^10.0.0",
     "nyc": "^13.0.1",
     "pre-commit": "^1.2.2",
     "sinon": "^6.1.5"
