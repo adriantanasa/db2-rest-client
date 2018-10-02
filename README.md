@@ -1,95 +1,177 @@
 # db2-rest-client
 
+[![NPM Version][npm-image]][npm-url]
+[![Build Status][travis-image]][travis-url]
+[![NPM Downloads][downloads-image]][downloads-url]
+
 Node.js client for IBM Db2 Warehouse on Cloud REST API (previously dashDB).
 It is intended to be used for DevOps (administration, monitoring, data load) for DB2 on Cloud service.
+The client can be used as part of a Node.js application or as a CLI tool.
 
-The target APIs are covering the following main areas:
+The target APIs are covering the following main areas: authentication, database objects, data load, SQL, file storage, monitoring, settings, users administration.
 
-* Authentication
-* Database Objects
-* Data load
-* SQL
-* File Storage
-* Monitoring
-* Settings
-* Users
+- [Installation & Usage](#installation--usage)
+    - [Node.js Application](#nodejs-application)
+    - [CLI - CI/Shell script](#cli---cishell-script)
+- [Client API](#client-api)
+- [CLI API / Jobs](#cli-api--jobs)
+- [Integration Testing](#integration-testing)
+- [Debugging](#debugging)
+- [Contribution](#contribution)
+- [References](#references)
 
-## Installation
+## Installation & Usage
+
+### Node.js Application
 
 Installing the client locally and using it in a Node.JS application:
 
-```
+```bash
 npm i db2-rest-client --save
 ```
-
-## Usage
 
 ```javascript
 const Db2RestClient = require('db2-rest-client');
 
-try {
-    const db2Client = new Db2RestClient({
-        credentials: {
-            userid: 'userId',
-            password: 'password'
-        },
-        uri: 'https://<db2-on-cloud-hostname>/dbapi/v3'
-    });
+// calling it directly in a root script
+(async () => {
+    try {
+        const db2Client = new Db2RestClient({
+            credentials: {
+                userid: 'userId',
+                password: 'password'
+            },
+            uri: 'https://<db2-on-cloud-hostname>/dbapi/v3'
+        });
 
-    // load data from a local file - request pooling
-    const res = await db2Client.upload('./path/to/data.csv');
-    // query 
-    const data = await db2Client.query('SELECT ID, NAME FROM MYSCHEMA.MYTABLE_NAME');
-    console.log(data);
-} catch (err) {
-    // debug code
-}
-
+        // load data from a local file - target table previously created
+        const res = await db2Client.load('./path/to/data.csv', 'MY_TABLE', 'MY_SCHEMA');
+        // query
+        const data = await db2Client.query('SELECT COUNT(*) AS TOTAL FROM MY_SCHEMA.MY_TABLE');
+        console.log(data);
+    } catch (err) {
+        console.err('Client error', err);
+    }
+})();
 ```
 
-## Methods
+### CLI - CI/Shell script
 
-TBD
+Installing and using the module in CLI mode:
 
-Check the /test/integration folder for examples of usage.
-
-## Jobs
-
-There are a set of CLI jobs that can be executed in an automation script and can be integrated with a CI runner (Jenkins/Travis).
-The job is looking in the ENV variables for the DB2 credentials.
-
-```shell
+```bash
 npm i -g db2-rest-client
+
+# shell code start
+export DB_USERID='<USERNAME>'
+export DB_PASSWORD='<PASSWORD>'
+export DB_URI='https://<hostname>/dbapi/v3'
+# optional parameters
+export DB_POOLING_TIMEOUT=5000
+export DB_POOLING_MAX_RETRIES=50
+export DEBUG=db2-rest-client:cli
+# call a job - load data to a target table
+db2-rest-client load --file=sample1.csv --table='MY_TABLE' --schema='MY_SCHEMA'
+# shell code end
 ```
+
+## Client API
+
+Check the /test/integration and the /lib/strategy folders for usage examples.
+
+### construct
+
+Accept an config object as input with the following parameters
+
+- credentials - {userid: '...', password:'...'} as per Db2 on Cloud credentials page
+
+- uri - URI of the DB2 REST api (check the example above for V3)
+
+- poolingTimeout - Number of pooling retries before aborting a job
+
+- poolingMaxRetries - Waiting time (ms) between pooling requests
+
+### request 
+
+Base method for performing a request to DB2 Rest API - it performs authorization if necesary.
+
+- type ('DEFAULT') - maps to one of the preefined object in config/apiPrototypes.json
+
+- extraOptions ({}) - overrides the type based request options - check request-promise module for the format.
+
+- authRequired (true) - does request requires an auth key or not
+
+### requestPolling
+
+Base method for the request pooling required for some async rest calls as upload progress, batch queries etc. 
+It checks the status of a job until the response body matches success or failure object or the pooling limit is reached (poolingMaxRetries)
+
+- type ('DEFAULT') - as above
+
+- extraOptions - as above
+
+- success ({status: 'completed'}) - The body match for success - can be also an array
+
+- failed ({status: 'failed'})
+
+- tryCount - used internaly for pooling
+
+- poolingMaxRetries (20) - Number of pooling retries before aborting the job
+
+- poolingTimeout - Waiting time in miliseconds between pooling requests
+
+### query
+
+Executes an SELECT SQL query and returns up to 100.000 rows as JSON. For all other queries or non-existing table an error is reported.
+
+- sqlQuery - SQL query
+
+### bulkQueries
+
+Executes a comma separated list of SQL queries. All the queries that are not SELECT have also to use this method.
+
+- sqlQueries - SQL command (ex: 'DELETE FROM MY_SCHEMA.MY_TABLE WHERE 1; INSERT INTO MY_SCHEMA.MY_TABLE VALUES (\'1\',\'TEST\');')
+
+### upload
+
+Uploads a local (CSV) file to the DB2 on Cloud server in order to be used later in a load job.
+
+- filePath - path to local .csv file
 
 ### load
 
-Loads a local CSV file into a target table.
+Loads data into a target table from a local .csv file. It calls the upload method above as part of the process.
 
-```shell
-export DB_USERID='<USERNAME>';export DB_PASSWORD='<PASSWORD>';export DB_URI='https://<hostname>/dbapi/v3';export DEBUG=db2-rest-client:cli;
-db2-rest-client load --file=./test/data/sample1.csv --table='TST_SAMPLE' --schema='MANUAL' --type=INSERT
-```
+- filePath - path to local .csv file
 
-### load-in-place
+- table - Target table
 
-Loads all the data in a new table created from the target and then replaces the target with the new table (renaming).
+- schema - Table schema
 
-```shell
-# default CSV file
-db2-rest-client load-in-place --file=./test/data/sample2.csv --table='TST_SAMPLE' --schema='MANUAL'
+- isReplace (true) - Data load mode (REPLACE vs INSERT)
 
-# customize request - TSV file with header
-db2-rest-client load-in-place --file=./test/data/sample3.tsv --table='TST_SAMPLE' --schema='MANUAL' --extra='{"body": { "file_options": {"has_header_row":"yes","column_delimiter":"0x09"}}}'
+- extraOptions ({}) - Override request payload - for example file type, data separator.
 
-```
+## CLI API / Jobs
 
-### query (only SELECT queries)
+The module provides a set of predefined jobs that can be executed in an CLI/automation script and can be integrated with a CI runner (Jenkins/Travis).
+For the jobs that have an non-debug output (ex: query) can have it redirected to a separate file.
 
-Executes an SQL query in sync mode and returns up to 10.000 rows of data in JSON format. Only SELECT queries are allowed by
+Environment variables - see the [CLI api](#client-api) for values:
+
+- DB_USERID
+- DB_PASSWORD
+- DB_URI || DB_HOSTNAME
+- DB_POOLING_TIMEOUT
+- DB_POOLING_MAX_RETRIES
+
+### query
+
+Executes an SQL query in sync mode and returns up to 100.000 rows of data in JSON format. Only SELECT queries are allowed by
 DB2 api.
 
-```shell
+```bash
+export DB_USERID='<USERID>';export DB_PASSWORD='<PASSWORD>';export DB_URI='https://<hostname>/dbapi/v3';export DEBUG=db2-rest-client:cli;
 # example of output to a file
 db2-rest-client query --query="SELECT * FROM MANUAL.TST_SAMPLE" > test.json
 ```
@@ -98,9 +180,32 @@ db2-rest-client query --query="SELECT * FROM MANUAL.TST_SAMPLE" > test.json
 
 Executes a list of coma separated list of QUERIES.
 
-```shell
+```bash
 db2-rest-client batch --query="INSERT INTO MANUAL.TST_SAMPLE (ID, DESCRIPTION) VALUES ('100', 'test'); SELECT * FROM MANUAL.TST_SAMPLE;" > test.json
 ```
+
+### load
+
+Loads a local CSV file into a target table. Test with a source .csv file 70MB / ~ 4 million rows completed in 3 minutes.
+
+```bash
+db2-rest-client load --file=./test/data/sample1.csv --table='TST_SAMPLE' --schema='MANUAL' --type=INSERT
+```
+
+### load-in-place
+
+Loads all the data in a new table created from the target and then replaces the target with the new table (renaming).
+
+```bash
+# default CSV file
+db2-rest-client load-in-place --file=./test/data/sample2.csv --table='TST_SAMPLE' --schema='MANUAL'
+
+# customize request - TSV file with header
+db2-rest-client load-in-place --file=./test/data/sample3.tsv --table='TST_SAMPLE' --schema='MANUAL' --extra='{"body": { "file_options": {"has_header_row":"yes","column_delimiter":"0x09"}}}'
+
+```
+
+_Note:_ The job is using the DB2 _RENAME_ query so additional actions might be needed to re-create the indexes.
 
 ## Integration Testing
 
@@ -114,19 +219,29 @@ export DB_USERID='<userid>';export DB_PASSWORD='<password>';export DB_URI='https
 
 ```
 # all log levels
-export DEBUG=db2-rest-client
-# just info
-export DEBUG=db2-rest-client:info
-# all
 export DEBUG=db2-rest-client:*
+# debug info
+export DEBUG=db2-rest-client:info
+# cli mode
+export DEBUG=db2-rest-client:cli
 ```
 
 ## Contribution
 
 We are welcoming contributors - feel free to report issues, request features and help us improve the tool.
+For code contribution please create first a feature request (issue - tagged *enhancement* or *bug*) then a PR request from your forked branch.
+Code needs to pass lint and UT automate checks before being reviewed.
 
 ## References
 
 * [IBM Db2 Warehouse on Cloud REST API](https://developer.ibm.com/static/site-id/85/api/db2whc-v3/)
 * [IBM DB2 on Cloud](https://www.ibm.com/cloud/db2-on-cloud)
 * [ibm_db module](https://www.npmjs.com/package/ibm_db)
+
+
+[npm-image]: https://img.shields.io/npm/v/db2-rest-client.svg
+[npm-url]: https://npmjs.org/package/db2-rest-client
+[travis-image]: https://img.shields.io/travis/adriantanasa/db2-rest-client/master.svg
+[travis-url]: https://travis-ci.org/adriantanasa/db2-rest-client
+[downloads-image]: https://img.shields.io/npm/dm/db2-rest-client.svg
+[downloads-url]: https://npmjs.org/package/db2-rest-client
