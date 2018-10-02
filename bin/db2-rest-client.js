@@ -18,7 +18,9 @@ const {
     DB_PASSWORD: password,
     DB_USERID: userId,
     DB_URI: uri,
-    DB_HOSTNAME: hostname
+    DB_HOSTNAME: hostname,
+    DB_POOLING_TIMEOUT: poolingTimeout,
+    DB_POOLING_MAX_RETRIES: poolingMaxRetries
 } = process.env;
 
 if (!password || !userId || !(uri || hostname)) {
@@ -31,7 +33,9 @@ const config = {
         userid: userId,
         password: password
     },
-    uri: uri || `https://${hostname}>/dbapi/v3`
+    uri: uri || `https://${hostname}>/dbapi/v3`,
+    poolingTimeout: poolingTimeout,
+    poolingMaxRetries: poolingMaxRetries
 };
 
 let task = argv['_'].length > 0 ? argv['_'][0] : 'help';
