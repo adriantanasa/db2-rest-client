@@ -1,6 +1,6 @@
 {
   "name": "db2-rest-client",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Node.js Client for DB2 on Cloud (REST api) - administration, monitoring, exploring, loading data.",
   "main": "index.js",
   "scripts": {
