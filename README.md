@@ -167,8 +167,8 @@ Environment variables - see the [CLI api](#client-api) for values:
 
 ### query
 
-Executes an SQL query in sync mode and returns up to 100.000 rows of data in JSON format. Only SELECT queries are allowed by
-DB2 api.
+Executes an SQL statement in sync mode and returns up to 100.000 rows of data in JSON format. Only SELECT statements are allowed by
+the DB2 endpoint api.
 
 ```bash
 export DB_USERID='<USERID>';export DB_PASSWORD='<PASSWORD>';export DB_URI='https://<hostname>/dbapi/v3';export DEBUG=db2-rest-client:cli;
@@ -178,7 +178,7 @@ db2-rest-client query --query="SELECT * FROM MANUAL.TST_SAMPLE" > test.json
 
 ### batch
 
-Executes a list of coma separated list of QUERIES.
+Executes a coma separated list of SQL statements.
 
 ```bash
 db2-rest-client batch --query="INSERT INTO MANUAL.TST_SAMPLE (ID, DESCRIPTION) VALUES ('100', 'test'); SELECT * FROM MANUAL.TST_SAMPLE;" > test.json
@@ -186,7 +186,7 @@ db2-rest-client batch --query="INSERT INTO MANUAL.TST_SAMPLE (ID, DESCRIPTION) V
 
 ### load
 
-Loads a local CSV file into a target table. Test with a source .csv file 70MB / ~ 4 million rows completed in 3 minutes.
+Loads data from a local .csv file into a target table. Tested with a source .csv file 70MB / ~ 4 million rows completed in 3 minutes.
 
 ```bash
 db2-rest-client load --file=./test/data/sample1.csv --table='TST_SAMPLE' --schema='MANUAL' --type=INSERT
@@ -194,7 +194,7 @@ db2-rest-client load --file=./test/data/sample1.csv --table='TST_SAMPLE' --schem
 
 ### load-in-place
 
-Loads all the data in a new table created from the target and then replaces the target with the new table (renaming).
+Loads data from a local .csv file in a newly created table (from the target table schema) and then replaces the target with the new table (renaming).
 
 ```bash
 # default CSV file
@@ -205,11 +205,12 @@ db2-rest-client load-in-place --file=./test/data/sample3.tsv --table='TST_SAMPLE
 
 ```
 
-_Note:_ The job is using the DB2 _RENAME_ query so additional actions might be needed to re-create the indexes.
+_Note:_ The job is using the DB2 _RENAME_ statement so additional actions are needed to re-create the indexes and other constraints.
 
 ## Integration Testing
 
-Running integration tests against your DB2 on Cloud instance - the user needs access to create tables, execute queries, load data. The credentials can be found on the **IBM on Cloud > DB2 Service > Credentials** page. 
+Running integration tests against your DB2 on Cloud instance - the user requires access to create tables, execute statements, load data.
+The credentials can be found on the **IBM on Cloud > DB2 Service > Credentials** page. 
 
 ```
 export DB_USERID='<userid>';export DB_PASSWORD='<password>';export DB_URI='https://<hostname>/dbapi/v3'; npm run integration
