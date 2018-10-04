@@ -4,7 +4,7 @@
 [![Build Status][travis-image]][travis-url]
 [![NPM Downloads][downloads-image]][downloads-url]
 
-Node.js client for IBM Db2 Warehouse on Cloud REST API (previously dashDB).
+Node.js client for [IBM Db2 (Warehouse) on Cloud](#references) REST API (previously DashDB).
 It is intended to be used for DevOps (administration, monitoring, data load) for DB2 on Cloud service.
 The client can be used as part of a Node.js application or as a CLI tool.
 
@@ -15,6 +15,7 @@ The target APIs are covering the following main areas: authentication, database 
     - [CLI - CI/Shell script](#cli---cishell-script)
 - [Client API](#client-api)
 - [CLI API / Jobs](#cli-api--jobs)
+- [Starting checklist](#starting-checklist)
 - [Integration Testing](#integration-testing)
 - [Debugging](#debugging)
 - [Contribution](#contribution)
@@ -207,13 +208,23 @@ db2-rest-client load-in-place --file=./test/data/sample3.tsv --table='TST_SAMPLE
 
 _Note:_ The job is using the DB2 _RENAME_ statement so additional actions are needed to re-create the indexes and other constraints.
 
+## Starting checklist
+
+- DB2 on Cloud or DB2 Warehouse on Cloud Service created
+- At least one user defined on the service Credentials page - **IBM on Cloud > DB2 Service > Service Credentials** or **Data & Analytics > Db2 Warehouse on Cloud > Service Credentials**
+- (Recommended) Repository cloned localy and [integration tests](#integration-testing) executed with success
+
 ## Integration Testing
 
-Running integration tests against your DB2 on Cloud instance - the user requires access to create tables, execute statements, load data.
-The credentials can be found on the **IBM on Cloud > DB2 Service > Credentials** page. 
+Allows the user to tests the core client methods (executing statements, export data, load data from a .csv source file, upload) against a real DB2 (Warehouse) on Cloud instance.
 
-```
+
+```bash
+# by default uses the user schema (some plans don't allow additional schemas - Entry  plan for Db2 Warehouse on Cloud)
 export DB_USERID='<userid>';export DB_PASSWORD='<password>';export DB_URI='https://<hostname>/dbapi/v3'; npm run integration
+
+# testing creation of new schema as well
+export DB_USERID='<userid>';export DB_PASSWORD='<password>';export DB_URI='https://<hostname>/dbapi/v3';export DB_NEW_SCHEMA=true; npm run integration
 ```
 
 ## Debugging
@@ -236,6 +247,8 @@ Code needs to pass lint and UT automate checks before being reviewed.
 ## References
 
 * [IBM Db2 Warehouse on Cloud REST API](https://developer.ibm.com/static/site-id/85/api/db2whc-v3/)
+* [Db2 on Cloud - IBM Knowledge Center] (https://www.ibm.com/support/knowledgecenter/en/SS6NHC/com.ibm.swg.im.dashdb.kc.doc/welcome.html)
+* [IBM DB2 Warehouse on Cloud](https://www.ibm.com/cloud/db2-warehouse-on-cloud)
 * [IBM DB2 on Cloud](https://www.ibm.com/cloud/db2-on-cloud)
 * [ibm_db module](https://www.npmjs.com/package/ibm_db)
 
