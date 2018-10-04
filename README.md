@@ -68,8 +68,8 @@ export DB_USERID='<USERNAME>'
 export DB_PASSWORD='<PASSWORD>'
 export DB_URI='https://<hostname>/dbapi/v3'
 # optional parameters
-export DB_POOLING_TIMEOUT=5000
-export DB_POOLING_MAX_RETRIES=50
+export DB_POLLING_WAIT=5000
+export DB_POLLING_MAX_RETRIES=50
 export DEBUG=db2-rest-client:cli
 # call a job - load data to a target table
 db2-rest-client load --file=sample1.csv --table='MY_TABLE' --schema='MY_SCHEMA'
@@ -88,9 +88,9 @@ Accept an config object as input with the following parameters
 
 - uri - URI of the DB2 REST api (check the example above for V3)
 
-- poolingTimeout - Number of pooling retries before aborting a job
+- pollingWait - Number of polling retries before aborting a job
 
-- poolingMaxRetries - Waiting time (ms) between pooling requests
+- pollingMaxRetries - Waiting time (ms) between polling requests
 
 ### request 
 
@@ -104,8 +104,8 @@ Base method for performing a request to DB2 Rest API - it performs authorization
 
 ### requestPolling
 
-Base method for the request pooling required for some async rest calls as upload progress, batch queries etc. 
-It checks the status of a job until the response body matches success or failure object or the pooling limit is reached (poolingMaxRetries)
+Base method for the request polling required for some async rest calls as upload progress, batch queries etc. 
+It checks the status of a job until the response body matches success or failure object or the polling limit is reached (pollingMaxRetries)
 
 - type ('DEFAULT') - as above
 
@@ -115,11 +115,11 @@ It checks the status of a job until the response body matches success or failure
 
 - failed ({status: 'failed'})
 
-- tryCount - used internaly for pooling
+- tryCount - used internaly for polling
 
-- poolingMaxRetries (20) - Number of pooling retries before aborting the job
+- pollingMaxRetries (20) - Number of polling retries before aborting the job
 
-- poolingTimeout - Waiting time in miliseconds between pooling requests
+- pollingWait - Waiting time in miliseconds between polling requests
 
 ### query
 
@@ -163,8 +163,8 @@ Environment variables - see the [CLI api](#client-api) for values:
 - DB_USERID
 - DB_PASSWORD
 - DB_URI || DB_HOSTNAME
-- DB_POOLING_TIMEOUT
-- DB_POOLING_MAX_RETRIES
+- DB_POLLING_WAIT
+- DB_POLLING_MAX_RETRIES
 
 ### query
 
@@ -204,6 +204,28 @@ db2-rest-client load-in-place --file=./test/data/sample2.csv --table='TST_SAMPLE
 # customize request - TSV file with header
 db2-rest-client load-in-place --file=./test/data/sample3.tsv --table='TST_SAMPLE' --schema='MANUAL' --extra='{"body": { "file_options": {"has_header_row":"yes","column_delimiter":"0x09"}}}'
 
+```
+
+### request
+
+Executes a raw authenticated request using a JSON object as input compatible with request-promise-native.
+
+```bash
+# performing a GET request for the users list
+db2-rest-client request --options='{"uri": "/users"}'
+# returning storage information
+db2-rest-client request --options='{"uri": "/monitor/storage"}'
+# performing a POST request to create a schema
+db2-rest-client request --options='{"uri": "/schemas", method:"POST", "body": {"name":"NEWSCHEMA"}}'
+```
+
+### request-polling
+
+Some of the requests (as loading data) require first to do a POST request with the information and then check the progress using the returned ID until a success or failure status is reached.
+
+```bash
+# example for checking a load job created in a previous request
+db2-rest-client request-polling --options='{"uri": "/load_jobs/1536865382644"}' --success='{"status": {"status": "Success"}}' --failed='{"status": {"status": "Failure"}}'  --pollingMaxRetries=50 --pollingWait=10000
 ```
 
 _Note:_ The job is using the DB2 _RENAME_ statement so additional actions are needed to re-create the indexes and other constraints.

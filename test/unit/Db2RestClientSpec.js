@@ -11,8 +11,8 @@ describe('Testsuite Db2RestClient', () => {
             password: 'password'
         },
         uri: 'https://hostname',
-        'poolingTimeout': 100,
-        'poolingMaxRetries': 100
+        'pollingWait': 100,
+        'pollingMaxRetries': 100
     };
 
     const goodToken = {token: 'authtokenid'};
@@ -34,8 +34,8 @@ describe('Testsuite Db2RestClient', () => {
         expect(client.uri).to.equal(undefined);
         expect(client.authKey).to.equal(null);
         expect(client.optionsBuilder).to.equal(null);
-        expect(client.poolingTimeout).to.equal(3000);
-        expect(client.poolingMaxRetries).to.equal(20);
+        expect(client.pollingWait).to.equal(3000);
+        expect(client.pollingMaxRetries).to.equal(20);
     });
 
     it('Testcase - Constructor - valid params', () => {
@@ -48,8 +48,8 @@ describe('Testsuite Db2RestClient', () => {
         expect(client.uri).to.equal('https://hostname');
         expect(client.authKey).to.equal(null);
         expect(client.optionsBuilder).to.equal(null);
-        expect(client.poolingTimeout).to.equal(100);
-        expect(client.poolingMaxRetries).to.equal(100);
+        expect(client.pollingWait).to.equal(100);
+        expect(client.pollingMaxRetries).to.equal(100);
     });
 
     it('Testcase - get cached Oauth', async () => {
