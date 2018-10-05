@@ -82,15 +82,15 @@ Check the /test/integration and the /lib/strategy folders for usage examples.
 
 ### construct
 
-Accept an config object as input with the following parameters
+Accept an config object as input with the following properties:
 
 - credentials - {userid: '...', password:'...'} as per Db2 on Cloud credentials page
 
 - uri - URI of the DB2 REST api (check the example above for V3)
 
-- pollingWait - Number of polling retries before aborting a job
+- pollingWait - Waiting time (ms) between polling requests
 
-- pollingMaxRetries - Waiting time (ms) between polling requests
+- pollingMaxRetries - Number of polling retries before aborting a job
 
 ### request 
 
@@ -187,11 +187,16 @@ db2-rest-client batch --query="INSERT INTO MANUAL.TST_SAMPLE (ID, DESCRIPTION) V
 
 ### load
 
-Loads data from a local .csv file into a target table. Tested with a source .csv file 70MB / ~ 4 million rows completed in 3 minutes.
+Loads data from a local .csv file into a target table.
 
 ```bash
 db2-rest-client load --file=./test/data/sample1.csv --table='TST_SAMPLE' --schema='MANUAL' --type=INSERT
 ```
+
+Tests performed on a DB2 on Cloud instance (Flex plan - IBM dedicated):
+
+ - file size 70MB / ~ 4 million rows completed in 3 minutes
+ - file size 200MB / ~ 7 million rows completed in 7 minutes
 
 ### load-in-place
 
