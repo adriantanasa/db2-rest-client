@@ -274,7 +274,7 @@ Code needs to pass lint and UT automate checks before being reviewed.
 ## References
 
 * [IBM Db2 Warehouse on Cloud REST API](https://developer.ibm.com/static/site-id/85/api/db2whc-v3/)
-* [Db2 on Cloud - IBM Knowledge Center] (https://www.ibm.com/support/knowledgecenter/en/SS6NHC/com.ibm.swg.im.dashdb.kc.doc/welcome.html)
+* [Db2 on Cloud - IBM Knowledge Center](https://www.ibm.com/support/knowledgecenter/en/SS6NHC/com.ibm.swg.im.dashdb.kc.doc/welcome.html)
 * [IBM DB2 Warehouse on Cloud](https://www.ibm.com/cloud/db2-warehouse-on-cloud)
 * [IBM DB2 on Cloud](https://www.ibm.com/cloud/db2-on-cloud)
 * [ibm_db module](https://www.npmjs.com/package/ibm_db)
