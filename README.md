@@ -3,6 +3,7 @@
 [![NPM Version][npm-image]][npm-url]
 [![Build Status][travis-image]][travis-url]
 [![NPM Downloads][downloads-image]][downloads-url]
+[![Coveralls Status][coveralls-image]][coveralls-url]
 
 Node.js client for [IBM Db2 (Warehouse) on Cloud](#references) REST API (previously DashDB).
 It is intended to be used for DevOps (administration, monitoring, data load) for DB2 on Cloud service.
@@ -286,3 +287,5 @@ Code needs to pass lint and UT automate checks before being reviewed.
 [travis-url]: https://travis-ci.org/adriantanasa/db2-rest-client
 [downloads-image]: https://img.shields.io/npm/dm/db2-rest-client.svg
 [downloads-url]: https://npmjs.org/package/db2-rest-client
+[coveralls-image]: https://coveralls.io/repos/github/adriantanasa/db2-rest-client/badge.svg?branch=master
+[coveralls-url]: https://coveralls.io/github/adriantanasa/db2-rest-client?branch=master
