@@ -29,8 +29,8 @@
   "homepage": "https://github.com/adriantanasa/db2-rest-client#readme",
   "devDependencies": {
     "chai": "^4.1.2",
-    "coveralls": "^3.0.2",
-    "eslint": "^5.4.0",
+    "coveralls": "^3.0.4",
+    "eslint": "^5.16.0",
     "eslint-plugin-node": "^7.0.1",
     "mocha": "^5.2.0",
     "nock": "^10.0.0",
@@ -39,12 +39,12 @@
     "sinon": "^6.1.5"
   },
   "dependencies": {
+    "csvtojson": "^2.0.8",
     "debug": "^3.1.0",
-    "lodash": "^4.17.10",
-    "request": "^2.88.0",
-    "request-promise-native": "^1.0.5",
+    "lodash": "^4.17.11",
     "minimist": "^1.2.0",
-    "csvtojson": "^2.0.8"
+    "request": "^2.88.0",
+    "request-promise-native": "^1.0.5"
   },
   "keywords": [
     "db2",
