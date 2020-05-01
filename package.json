@@ -8,7 +8,9 @@
     "coverage": "nyc npm test",
     "integration": "mocha test/integration --recursive --timeout 50000",
     "lint": "eslint index.js lib",
-    "db2-rest-client": "node ./bin/db2-rest-client.js"
+    "db2-rest-client": "node ./bin/db2-rest-client.js",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "bin": {
     "db2-rest-client": "./bin/db2-rest-client.js"
@@ -44,7 +46,8 @@
     "lodash": "^4.17.11",
     "minimist": "^1.2.0",
     "request": "^2.88.0",
-    "request-promise-native": "^1.0.5"
+    "request-promise-native": "^1.0.5",
+    "snyk": "^1.316.1"
   },
   "keywords": [
     "db2",
@@ -54,5 +57,6 @@
   ],
   "engines": {
     "node": ">=8.11.0"
-  }
+  },
+  "snyk": true
 }
